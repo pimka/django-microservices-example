@@ -25,12 +25,16 @@ urlpatterns = [
     path('auth/', UserAuthView.as_view()),
     path('user/', UserBaseOperView.as_view()),
     path('user/<uuid:user_id>/', UserAdvOperView.as_view()),
+
     path('orders/', OrderBaseOperView.as_view()),
     path('orders/<uuid:ord_id>/', OrderAdvOperView.as_view()),
+
     path('props/', PropertyBaseOperView.as_view()),
     path('props/<uuid:prop_id>/', PropertyAdvOperView.as_view()),
+
     path('user/<uuid:user_id>/orders/', UsersOrdersView.as_view()),
     path('user/<uuid:user_id>/orders/<uuid:ord_id>/', UserOrdersAdvView.as_view()),
+    
     path('user/<uuid:user_id>/props/<uuid:prop_id>/', UserPropertyAdvView.as_view()),
     path('user/<uuid:user_id>/props/', UserPropertyView.as_view())
 ]
