@@ -9,9 +9,6 @@ from api.serializers import PropertySerializer
 
 
 class PropertyDetail(APIView):
-    paginator = LimitOffsetPagination()
-    paginator.default_limit = 100
-
     def get_object(self, prop_uuid):
         try:
             return PropertyModel.objects.get(prop_uuid=prop_uuid)
@@ -20,7 +17,7 @@ class PropertyDetail(APIView):
 
     def get(self, request, prop_uuid):
         prop = self.get_object(prop_uuid)
-        serializer = PropertySerializer(self.paginator.paginate_queryset(prop, request))
+        serializer = PropertySerializer(prop)
         return Response(serializer.data)
 
     def put(self, request, prop_uuid):
@@ -37,9 +34,12 @@ class PropertyDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PropertyOper(APIView):
+    paginator = LimitOffsetPagination()
+    paginator.default_limit = 100
+
     def get(self, request):
         props = PropertyModel.objects.all()
-        serializer = PropertySerializer(props, many=True)
+        serializer = PropertySerializer(self.paginator.paginate_queryset(props, request), many=True)
         return Response(serializer.data)
 
     def post(self, request):
