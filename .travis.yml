@@ -7,9 +7,13 @@ install:
 script:
   - cd gateway
   - coverage run manage.py test
+  - coverage report -m
   - cd ../user
   - coverage run manage.py test
+  - coverage report -m
   - cd ../order
   - coverage run manage.py test
+  - coverage report -m
   - cd ../the_property
   - coverage run manage.py test
+  - coverage report -m
