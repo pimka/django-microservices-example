@@ -1,0 +1,28 @@
+{% extends 'site.html' %}
+
+{% block body_block %}
+    <h2>Orders</h2>
+    
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">UUID</th>
+                <th scope="col">Type</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Property</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <th scope="row">{{ order.order_uuid }}</th>
+                    <td>{{ order.order_type }}</td>
+                    <td>{{ order.customer_uuid }}</td>
+                    <td>{{ order.prop_uuid }}</td>
+                    <td>{{ order.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock body_block %}

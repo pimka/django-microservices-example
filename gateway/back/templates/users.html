@@ -1,0 +1,22 @@
+{% extends 'site.html' %}
+
+{% block body_block %}
+    <h2>Users</h2>
+    
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">UUID</th>
+                <th scope="col">Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <th scope="row">{{ user.owner_uuid }}</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock body_block %}

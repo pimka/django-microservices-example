@@ -1,0 +1,28 @@
+{% extends 'site.html' %}
+
+{% block body_block %}
+    <h2>Properties</h2>
+    
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">UUID</th>
+                <th scope="col">Address</th>
+                <th scope="col">Area</th>
+                <th scope="col">Living</th>
+                <th scope="col">Owner UUID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prop in properties %}
+                <tr>
+                    <th scope="row">{{ prop.prop_uuid }}</th>
+                    <td>{{ prop.addres }}</td>
+                    <td>{{ prop.area }}</td>
+                    <td>{{ prop.is_living }}</td>
+                    <td>{{ prop.owner_uuid }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock body_block %}
