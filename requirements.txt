@@ -8,3 +8,5 @@ django-cors-headers
 celery
 gevent
 pybreaker
+memcache
+python-memcached
