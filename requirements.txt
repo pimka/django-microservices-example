@@ -8,5 +8,4 @@ django-cors-headers
 celery
 gevent
 pybreaker
-memcache==1.4.4
 python-memcached
