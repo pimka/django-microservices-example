@@ -1,7 +1,6 @@
 import logging
 
 import requests
-from rest_framework.views import Request
 
 
 class Requests:
@@ -17,39 +16,23 @@ class Requests:
 
     def get(self, url, header=None):
         self.log.info(f'GET | {url} | {header}')
-        try:
-            response = requests.get(url, headers=header)
-            return response
-        except requests.exceptions.RequestException as err:
-            self.log.exception(f'GET | {url} | {header} | {str(err)}')
-            return None
+        response = requests.get(url, headers=header)
+        return response
 
     def post(self, url, data, header=None):
         self.log.info(f'POST | {url} | {header} | {data}')
-        try:
-            response = requests.post(url, json=data, headers=header)
-            return response
-        except requests.exceptions.RequestException as err:
-            self.log.exception(f'POST | {url} | {header} | {str(err)}')
-            return None
+        response = requests.post(url, json=data, headers=header)
+        return response
 
     def delete(self, url, header=None):
         self.log.info(f'DELETE | {url} | {header}')
-        try:
-            response = requests.delete(url, headers=header)
-            return response
-        except requests.exceptions.RequestException as err:
-            self.log.exception(f'DELETE | {url} | {header} | {str(err)}')
-            return None
+        response = requests.delete(url, headers=header)
+        return response
 
     def put(self, url, data, header=None):
         self.log.info(f'PUT | {url} | {header} | {data}')
-        try:
-            response = requests.put(url, json=data, headers=header)
-            return response
-        except requests.exceptions.RequestException as err:
-            self.log.exception(f'PUT | {url} | {header} | {str(err)}')
-            return None
+        response = requests.put(url, json=data, headers=header)
+        return response
 
     def get_token(self, request):
         token = request.META['HTTP_AUTHORIZATION']
@@ -62,12 +45,18 @@ class Requests:
             return None
 
     def logging(self, message_type, response):
-        self.log.info(f'{message_type} | {response.status_code}')
+        if response is None:
+            self.log.exception(f'Invalid response')
+            return ({'error':'Invalid response'}, 503)
         try:
+            self.log.info(f'{message_type} | {response.status_code}')
             return response.json(), response.status_code
-        except ValueError as err:
-            self.log.exception(f'{message_type} | {err.msg}')
+        except Exception as err:
+            self.log.exception(f'{message_type} | {str(err)}')
             return response.text, response.status_code
+
+    def log_exception(self, err):
+        self.log.exception(str(err))
 
 class UserExist(Requests):
     def is_exist(self, request):

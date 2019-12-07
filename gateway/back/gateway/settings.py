@@ -58,6 +58,13 @@ ROOT_URLCONF = 'gateway.urls'
 
 STATICFILES_DIRS = [STATIC_DIR, ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
