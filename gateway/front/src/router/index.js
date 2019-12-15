@@ -9,6 +9,7 @@ import Property from '../views/Property.vue'
 import Order from '../views/Order.vue'
 import User from '../views/User.vue'
 import store from '@/store'
+import HiddenRedirect from '../views/HiddenRedirect.vue'
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,11 @@ const routes = [
     path: '/auth/',
     name: 'auth',
     component: Auth
+  },
+  {
+    path: '/hidden-redirect/',
+    name: 'hid_red',
+    component: HiddenRedirect
   }
 ]
 

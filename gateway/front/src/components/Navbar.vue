@@ -34,6 +34,11 @@
               <a class="nav-link" href="#" @click="logout">Logout</a>
             </li>
           </template>
+          <template v-if="!isLoggedIn">
+            <li class="nav-item">
+              <a class="nav-link" href="http://127.0.0.1:8001/o/authorize/?response_type=code&client_id=in7xsewpL5Hisi0ESPGyGz58HQ1eWhc97zObNMVG">OAuth</a>
+            </li>
+          </template>
         </ul>
       </div>
     </nav>

@@ -26,6 +26,8 @@ urlpatterns = [
     path('is_exist/', views.UserExist.as_view()),
     path('auth/', obtain_auth_token),
     path('admin/', admin.site.urls),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('accounts/', include('django.contrib.auth.urls'))
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

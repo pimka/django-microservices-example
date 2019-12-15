@@ -9,7 +9,10 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    user: {}
+    user: {},
+    refresh_token: localStorage.getItem('refresh_token') || '',
+    token_type: '',
+    access_token: localStorage.getItem('access_token') || ''
   },
   mutations: {
     auth_request (state) {
@@ -26,6 +29,15 @@ export default new Vuex.Store({
     logout (state) {
       state.status = ''
       state.token = ''
+      state.access_token = ''
+      state.token_type = ''
+      state.refresh_token = ''
+    },
+    oauth_success (state, payload) {
+      state.status = 'success'
+      state.access_token = payload.a_token
+      state.token_type = payload.type
+      state.refresh_token = payload.r_token
     }
   },
   actions: {
@@ -49,10 +61,20 @@ export default new Vuex.Store({
           })
       })
     },
+    oauth_login ({ commit }, data) {
+      const Atoken = data.access_token
+      const Ttype = data.token_type
+      const Rtoken = data.refresh_token
+      const tokens = { 'a_token': Atoken, 't_type': Ttype, 'r_token': Rtoken }
+      localStorage.setItem('access_token', Atoken)
+      commit('oauth_success', tokens)
+      axios.defaults.headers.common['Authorization'] = Ttype + ' ' + Atoken
+    },
     logout ({ commit }) {
       return new Promise((resolve, reject) => {
         commit('logout')
         localStorage.removeItem('token')
+        localStorage.removeItem('access_token')
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })
@@ -61,7 +83,7 @@ export default new Vuex.Store({
   modules: {
   },
   getters: {
-    isLoggedIn: state => !!state.token,
+    isLoggedIn: state => !!state.token || !!state.access_token,
     authStatus: state => state.status
   }
 })

@@ -13,13 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import include, path
 from rest_framework.urlpatterns import format_suffix_patterns
 
+from api.views.Advanced import (OrderPropView, UserOrdersAdvView,
+                                UserPropertyAdvView, UserPropertyView,
+                                UsersOrdersView)
 from api.views.Order import OrderAdvOperView, OrderBaseOperView
+from api.views.Prop import PropertyAdvOperView, PropertyBaseOperView
 from api.views.User import UserAdvOperView, UserAuthView, UserBaseOperView
-from api.views.Prop import PropertyBaseOperView, PropertyAdvOperView
-from api.views.Advanced import UsersOrdersView, UserOrdersAdvView, UserPropertyView, UserPropertyAdvView
+from api.views.OAuth import TokenExchangeView
 
 urlpatterns = [
     path('auth/', UserAuthView.as_view(), name='auth'),
@@ -36,7 +39,10 @@ urlpatterns = [
     path('user/<uuid:user_id>/orders/<uuid:ord_id>/', UserOrdersAdvView.as_view()),
     
     path('user/<uuid:user_id>/props/<uuid:prop_id>/', UserPropertyAdvView.as_view()),
-    path('user/<uuid:user_id>/props/', UserPropertyView.as_view())
+    path('user/<uuid:user_id>/props/', UserPropertyView.as_view()),
+
+    path('order/props/', OrderPropView.as_view()),
+    path('oauth2/token_exchange/', TokenExchangeView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

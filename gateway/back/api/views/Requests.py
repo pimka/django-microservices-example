@@ -9,7 +9,8 @@ class Requests:
         'auth':'http://localhost:8001/auth/',
         'is_exist':'http://localhost:8001/is_exist/',
         'order':'http://localhost:8002/orders/',
-        'prop':'http://localhost:8003/props/'
+        'prop':'http://localhost:8003/props/',
+        'oauth':'http://localhost:8001/o/',
     }
     TOKENS = dict()
     log = logging.getLogger(name='MicroserversLogger')

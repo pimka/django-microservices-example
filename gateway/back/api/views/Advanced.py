@@ -242,3 +242,27 @@ class UserPropertyAdvView(APIView):
         finally:
             cache.set('user_state', user_breaker._state_storage, None)
             return Response(json, status)
+
+
+class OrderPropView(APIView):
+    base = Requests()
+    permissions = [IsCustomAuthenticated, ]
+
+    def post(self, request):
+        try:
+            response_add_order = order_breaker.call(self.base.post, self.base.URLS['order'], request.data['order'])
+            json, status = self.base.logging('ADD ORDER WITH PROPERTY', response_add_order)
+            if status == 201:
+                try:
+                    response_add_prop = prop_breaker.call(self.base.post, self.base.URLS['prop'], request.data['prop'])
+                    json, status = self.base.logging('ADD ORDER WITH PROPERTY', response_add_prop)
+                except (RequestException, pybreaker.CircuitBreakerError) as error:
+                    self.base.log_exception(error)
+                    order_breaker.call(self.base.delete, self.base.URLS['prop'] + f'{json["order_uuid"]}/')
+                    json, status = {'error' : 'Service unavailable'}, 503
+        except (RequestException, pybreaker.CircuitBreakerError) as error:
+            self.base.log_exception(error)
+            tasks.post.delay(self.base.URLS['order'], request.data['order'])
+            json, status = {'error' : 'Service unavailable'}, 503
+        finally:
+            return Response(json, status)
