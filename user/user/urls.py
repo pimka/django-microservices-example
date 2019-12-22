@@ -24,6 +24,7 @@ urlpatterns = [
     path('user/', views.UserOper.as_view()),
     path('user/<uuid:user_id>/', views.UserAdvOper.as_view()),
     path('is_exist/', views.UserExist.as_view()),
+    path('serviceAuth/', views.ServiceAuth.as_view()),
     path('auth/', obtain_auth_token),
     path('admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),

@@ -155,3 +155,18 @@ LOGGING = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+ACCESS_DATA = {
+    'order' : {
+        'app_id' : '8002',
+        'app_secret' : '1481ade7-a0a1-43e1-bce4-4f761edc86fd'
+    },
+    'user' : {
+        'app_id' : '8001',
+        'app_secret' : 'cc8c8368-fdb0-4c3d-906b-a57d0132158d'
+    },
+    'prop' : {
+        'app_id' : '8003',
+        'app_secret' : 'ac91fab2-a436-451a-8dad-5faf8deae331'
+    }
+}

@@ -21,6 +21,7 @@ from api import views
 urlpatterns = [
     path('orders/', views.OrderOper.as_view()),
     path('orders/<uuid:ord_uuid>/', views.OrderDetail.as_view()),
+    path('serviceAuth/', views.ServiceAuth.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -9,3 +9,4 @@ celery
 gevent
 pybreaker
 python-memcached
+django-oauth-toolkit

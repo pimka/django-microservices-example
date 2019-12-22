@@ -1,15 +1,18 @@
 from django.http import Http404
 from rest_framework import status
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.pagination import LimitOffsetPagination
 
-from api.models import User
-from api.serializers import UserSerializer
+from api.models import User, CustomToken
+from api.serializers import UserSerializer, AppSerializer
+from api.auth import TokenAuth
 
 
 class UserOper(APIView):
+    authentication_classes = [TokenAuth, ]
     paginator = LimitOffsetPagination()
     paginator.default_limit = 100
 
@@ -28,6 +31,8 @@ class UserOper(APIView):
 
 
 class UserAdvOper(APIView):
+    authentication_classes = [TokenAuth, ]
+
     def get(self, request, user_id):
         try:
             user = User.objects.get(owner_uuid=user_id)
@@ -39,9 +44,21 @@ class UserAdvOper(APIView):
 
 class UserExist(APIView):
     permissions = [IsAuthenticated, ]
+    authentication_classes = [TokenAuth, ]
 
     def get(self, request, *args, **kwargs):
         if request.user is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = UserSerializer(request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class ServiceAuth(ObtainAuthToken):
+    serializer_class = AppSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context = {'request': request})
+        serializer.is_valid(raise_exception=True)
+        token = CustomToken.objects.create()
+
+        return Response({ 'token': token.token }, status.HTTP_200_OK)

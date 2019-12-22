@@ -5,12 +5,16 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView, Request, Response
 
-from api.permissions import IsCustomAuthenticated
-from api.views.Requests import Requests
 import celery_queue.tasks as tasks
+from api.permissions import IsCustomAuthenticated
+from api.service_auth import TokeniseRequest
+from api.views.Requests import Requests
+from gateway.settings import ACCESS_DATA
 
 cache.set('order_state', pybreaker.CircuitMemoryStorage(pybreaker.STATE_CLOSED), None)
 breaker = pybreaker.CircuitBreaker(fail_max=2, reset_timeout=60, state_storage=cache.get('order_state'))
+USER_ID = ACCESS_DATA['user']['app_id']
+USER_SECRET = ACCESS_DATA['user']['app_secret']
 
 
 class OrderBaseOperView(APIView):
@@ -19,8 +23,13 @@ class OrderBaseOperView(APIView):
     pagination.default_limit = 100
 
     def post(self, request):
+
+        @TokeniseRequest(cache, USER_ID, USER_SECRET, 'ORDER', 'http://localhost:8002/serviceAuth/')
+        def func(*args, **kwargs):
+            return self.base.post(*args, **kwargs)
+
         try:
-            response = breaker.call(self.base.post, self.base.URLS['order'], request.data)
+            response = breaker.call(func, self.base.URLS['order'], request.data)
             json, status = self.base.logging('ADD ORDER', response)
         except (RequestException, pybreaker.CircuitBreakerError) as error:
             self.base.log_exception(error)
@@ -32,13 +41,18 @@ class OrderBaseOperView(APIView):
             return Response(json, status)
 
     def get(self, request, limit_offset=None):
+
+        @TokeniseRequest(cache, USER_ID, USER_SECRET, 'ORDER', 'http://localhost:8002/serviceAuth/')
+        def func(*args, **kwargs):
+            return self.base.get(*args, **kwargs)
+
         limit_offset = request.query_params
         url = self.base.URLS['order']
         if limit_offset:
             url += f'?limit={limit_offset["limit"]}&offset={limit_offset["offset"]}'
 
         try:
-            response = breaker.call(self.base.get, url)
+            response = breaker.call(func, url)
             json, status = self.base.logging('GET ORDERS', response)
         except (RequestException, pybreaker.CircuitBreakerError) as error:
             self.base.log_exception(error)
@@ -53,8 +67,13 @@ class OrderAdvOperView(APIView):
     permission_classes = [IsCustomAuthenticated, ]
 
     def get(self, request, ord_id):
+
+        @TokeniseRequest(cache, USER_ID, USER_SECRET, 'ORDER', 'http://localhost:8002/serviceAuth/')
+        def func(*args, **kwargs):
+            return self.base.get(*args, **kwargs)
+
         try:
-            response = breaker.call(self.base.get, self.base.URLS['order'] + f'{ord_id}/')
+            response = breaker.call(func, self.base.URLS['order'] + f'{ord_id}/')
             json, status = self.base.logging('GET ORDER', response)
         except (RequestException, pybreaker.CircuitBreakerError) as error:
             self.base.log_exception(error)
@@ -65,8 +84,13 @@ class OrderAdvOperView(APIView):
             return Response(json, status)
 
     def put(self, request, ord_id):
+
+        @TokeniseRequest(cache, USER_ID, USER_SECRET, 'ORDER', 'http://localhost:8002/serviceAuth/')
+        def func(*args, **kwargs):
+            return self.base.put(*args, **kwargs)
+
         try:
-            response = breaker.call(self.base.put, self.base.URLS['order'] + f'{ord_id}/', request.data)
+            response = breaker.call(func, self.base.URLS['order'] + f'{ord_id}/', request.data)
             json, status = self.base.logging('UPDATE ORDER', response)
         except (RequestException, pybreaker.CircuitBreakerError) as error:
             self.base.log_exception(error)
@@ -78,8 +102,13 @@ class OrderAdvOperView(APIView):
             return Response(json, status)
 
     def delete(self, request, ord_id):
+
+        @TokeniseRequest(cache, USER_ID, USER_SECRET, 'ORDER', 'http://localhost:8002/serviceAuth/')
+        def func(*args, **kwargs):
+            return self.base.delete(*args, **kwargs)
+
         try:
-            response = breaker.call(self.base.delete, self.base.URLS['order'] + f'{ord_id}/')
+            response = breaker.call(func, self.base.URLS['order'] + f'{ord_id}/')
             json, status = self.base.logging('DELETE ORDER', response)
         except (RequestException, pybreaker.CircuitBreakerError) as error:
             self.base.log_exception(error)

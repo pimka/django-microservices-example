@@ -125,3 +125,8 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASSES' : 'rest_framework.pagination.LimitOffsetPagination',
 }
+
+ACCESS_DATA = {
+    'app_id' : '8001',
+    'app_secret' : 'cc8c8368-fdb0-4c3d-906b-a57d0132158d'
+}
